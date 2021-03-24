@@ -131,8 +131,14 @@ def read_bff(file_name):
 #     print("blocks are " + str(blocks))
 #     print("lasers are " + str(lasers))
 #     print("target points are " + str(targets))
+    
+    return (grid, blocks, lasers, targets)
 
 
 # if __name__ == '__main__':
-#     file_name = "/Users/michellechang/Desktop/boards/dark_1.bff"
-#     read_bff(file_name)
+#     file_name = "/Users/michellechang/Desktop/boards/mad_1.bff"
+#     board = read_bff(file_name)
+#     grid = board[0]
+#     blocks = board[1]
+#     lasers = board[2]
+#     targets = board[3]

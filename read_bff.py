@@ -1,5 +1,5 @@
 '''
-Michelle Chang, Michael Cho, and Yuechen Jin
+Michelle Chang, Michael Cho, and Yuecen Jin
 Software Carpentry - Lazor Project
 04/02/2021
 
@@ -135,10 +135,10 @@ def read_bff(file_name):
     return (grid, blocks, lasers, targets)
 
 
-# if __name__ == '__main__':
-#     file_name = "/Users/michellechang/Desktop/boards/mad_1.bff"
-#     board = read_bff(file_name)
-#     grid = board[0]
-#     blocks = board[1]
-#     lasers = board[2]
-#     targets = board[3]
+if __name__ == '__main__':
+    file_name = "/Users/michellechang/Desktop/boards/mad_1.bff"
+    board = read_bff(file_name)
+    grid = board[0]
+    blocks = board[1]
+    lasers = board[2]
+    targets = board[3]

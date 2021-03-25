@@ -44,7 +44,7 @@ def generator_board(grid, blocks):
         for j in range(col_num):
             if grid[i][j] == 1:
                 possible_spots.append([i,j])
-    perm = permutations(possible_spots, 3)
+    perm = permutations(possible_spots, len(blocks))
     # perm is all the possible combinations of positions each
     # available block can be placed 
 

@@ -27,10 +27,12 @@ def read_bff(file_name):
                     type of blocks we are allowed to add to grid.
                     2 indicates A or reflect block, 3 is A or opaque block,
                     4 is C or refract block
-            laser_position: *list* of integers
-                    position of lasers on grid
-            laser_direction: *list* of integers
-                    direction of lasers on grid
+            laser_position: *tuple* of lists
+                    position of lasers on grid 
+                    (first list is x position, second is y)
+            laser_direction: *tuple* of lists
+                    direction of lasers on grid 
+                    (first list is x direction, second is y)
             targets: *list* of tuples
                     the target points in grid we wish the lasers to intersect
     '''
@@ -132,9 +134,11 @@ def read_bff(file_name):
     laser_position = laser_x, laser_y
     laser_direction = laser_dx, laser_dy
 
-#     print("grid is " + str(grid))
-#     print("blocks are " + str(blocks))
-#     print("target points are " + str(targets))
+    # print("grid is " + str(grid))
+    # print("blocks are " + str(blocks))
+    # print("laser positions are " + str(laser_position))
+    # print("laser directions are " + str(laser_direction))
+    # print("target points are " + str(targets))
     
     return (grid, blocks, laser_position, laser_direction, targets)
 

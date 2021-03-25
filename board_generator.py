@@ -31,6 +31,10 @@ def generator_board(grid, blocks):
         boards: *3D list*
             a list of all grid layouts (2D list) that can be made with
             the given starting grid and available blocks that can be added
+            0 - empty space
+            2 - fixed reflect block (A)
+            3 - fixed opaque block (B)          
+            4 - fixed refract block (C)
     '''
 
     possible_boards = []
@@ -60,6 +64,18 @@ def generator_board(grid, blocks):
             row = positions[j][0]
             col = positions[j][1]
             copy_grid[row][col] = blocks[j]
+        # adding in the empty positions between block spaces that
+        # lasers can pass through and making all empty spaces of value 0
+        for j in range(len(copy_grid)):
+            length = len(copy_grid[j])
+            index = 0
+            while index <= 2*length:
+                copy_grid[j].insert(index, 0)
+                index = index + 2
+            length = len(copy_grid[j])
+            for k in range(length):
+                if copy_grid[j][k] == 1:
+                    copy_grid[j][k] = 0
         possible_boards.append(copy_grid)
 
     return(possible_boards)

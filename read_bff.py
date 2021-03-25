@@ -42,9 +42,10 @@ def read_bff(file_name):
     grid_temp = []
     grid_line = []
     blocks = []
-    lasers = dict()
-    laser_positions = []
-    laser_directions = []
+    laser_x = []
+    laser_y = []
+    laser_dx = []
+    laser_dy = []
     targets = []
 
     search1 = "GRID START"
@@ -109,10 +110,12 @@ def read_bff(file_name):
                 laser_info = line.split(' ')
                 x_pos = int(laser_info[1])
                 y_pos = int(laser_info[2])
-                laser_positions.append((x_pos, y_pos))
+                laser_x.append(x_pos)
+                laser_y.append(y_pos)
                 x_dir = int(laser_info[3])
                 y_dir = int(laser_info[4])
-                laser_directions.append((x_dir, y_dir))
+                laser_dx.append(x_dir)
+                laser_dy.append(y_dir)
         # finding and storing information about points
         if mark == False and search4 in line:
             if exception in line:
@@ -124,15 +127,14 @@ def read_bff(file_name):
                 y_pos = int(target_position[2])
                 targets.append((x_pos, y_pos))
 
-    lasers['position'] = laser_positions
-    lasers['direction'] = laser_directions
+    laser_position = laser_x, laser_y
+    laser_direction = laser_dx, laser_dy
 
 #     print("grid is " + str(grid))
 #     print("blocks are " + str(blocks))
-#     print("lasers are " + str(lasers))
 #     print("target points are " + str(targets))
     
-    return (grid, blocks, lasers, targets)
+    return (grid, blocks, laser_position, laser_direction, targets)
 
 
 if __name__ == '__main__':

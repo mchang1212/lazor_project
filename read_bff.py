@@ -3,7 +3,7 @@ Michelle Chang, Michael Cho, and Yuecen Jin
 Software Carpentry - Lazor Project
 04/02/2021
 
-This file was coded by Michelle Chang
+This file was coded by Michelle Chang (with contributions from Michael Cho)
 '''
 
 
@@ -27,8 +27,10 @@ def read_bff(file_name):
                     type of blocks we are allowed to add to grid.
                     2 indicates A or reflect block, 3 is A or opaque block,
                     4 is C or refract block
-            lasers: *dict*
-                    position and direction of lasers on grid
+            laser_position: *list* of integers
+                    position of lasers on grid
+            laser_direction: *list* of integers
+                    direction of lasers on grid
             targets: *list* of tuples
                     the target points in grid we wish the lasers to intersect
     '''
@@ -142,5 +144,6 @@ if __name__ == '__main__':
     board = read_bff(file_name)
     grid = board[0]
     blocks = board[1]
-    lasers = board[2]
-    targets = board[3]
+    laser_position = board[2]
+    laser_direction = board[3]
+    targets = board[4]

@@ -12,7 +12,7 @@ from board_generator import generator_board
 import Blocks_Lazors
 
 
-def check_solution(board, lasers, targets):
+def check_solution(board, laser_position, laser_direction, targets):
     '''
     This function takes in a potential solution of the board layout and
     and checks to see if the lasers (with their given position and
@@ -21,13 +21,16 @@ def check_solution(board, lasers, targets):
 
     **Parameters**
         board: *2D list*
-            0 - space on grid but no blocks allowed (x)
-            1 - open space for blocks (o)
+            0 - empty/open space on grid 
             2 - fixed reflect block (A)
             3 - fixed opaque block (B)
             4 - fixed refract block (C)
-        lasers: *dict*
-            position and direction of lasers on grid
+        laser_position: *tuple* of lists
+            position of lasers on grid 
+            (first list is x position, second is y)
+        laser_direction: *tuple* of lists
+            direction of lasers on grid 
+            (first list is x direction, second is y)
         targets: *list* of tuples
             the target points in grid we wish the lasers to intersect
 
@@ -68,15 +71,16 @@ if __name__ == '__main__':
     board = read_bff(file_name)
     grid = board[0]
     blocks = board[1]
-    lasers = board[2]
-    targets = board[3]
+    laser_position = board[2]
+    laser_direction = board[3]
+    targets = board[4]
     t0 = time.time()
 
     all_boards = generator_board(grid, blocks)
-    # iterating through all the potential boards to find the solution
+    # iterating through all the potential boards until we find the solution
     for i in all_boards:
         potential_solution = i
-        if check_solution(potential_solution, lasers, targets):
+        if check_solution(potential_solution, laser_position, laser_direction, targets):
             solution_board = potential_solution
             break
 

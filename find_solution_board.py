@@ -41,7 +41,20 @@ def check_solution(board, laser_position, laser_direction, targets):
     '''
     h = 0 # placeholder for now
     
+    '''
+    Notes:
+    Update laser(s) position step by step and then check if laser hits a
+    block. Use classes in Block_Lazors to update laser direction based
+    on the type of block it hits. 
+    Each position of the laser will be added to the laser path list.
+    At the end (when a laser hits the boundary of the grid or hits
+    an opaque block), iterate through laser path to see if all
+    target points are in the list. If so, then it is the correct
+    solution and we should return True
+    Also return the laser path(s) so we can print out in solution txt
+    '''
 
+    
 def print_solution(file_name, board):
     '''
     This function takes in the solution board layout and format the solution

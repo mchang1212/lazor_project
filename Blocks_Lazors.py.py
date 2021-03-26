@@ -39,6 +39,11 @@ class Block:
             direction
         '''
         b_type = self.b_type
+        if b_type == 1:  # Empty
+            # Let the lazer pass through. Only position is updated
+            return [((laser_position[0] + laser_direction[0],
+                      laser_position[1] + laser_direction[1]),
+                     laser_direction)]
         if b_type == 2:  # Reflect
             # if x coordinate of laser is divisble by 2, laser hits E/W
             # if not, laser hits N/S of block
@@ -53,11 +58,24 @@ class Block:
         elif b_type == 4:  # Refract
             if laser_position[0] % 2 == 1:
                 return [(laser_position, (-laser_direction[0],
-                          laser_direction[1])), ((laser_position
-                          [0] + laser_direction[0], laser_position
-                          [1] + laser_direction[1]), laser_direction)]
+                    laser_direction[1])), ((laser_position[0] +
+                     laser_direction[0], laser_position[1] +
+                     laser_direction[1]), laser_direction)]
             else:
-                return [(laser_position, (laser_direction[0], -laser_
-                          direction[1])), ((laser_position[0] + laser_
-                            direction[0], laser_position[1] + laser_
-                            direction[1]), laser_direction)]
+                return [(laser_position, (laser_direction[0],
+                    -laser_direction[1])), ((laser_position[0] +
+                    laser_direction[0], laser_position[1] +
+                    laser_direction[1]), laser_direction)]
+
+
+class Lazer:
+    '''
+    This is class of Lazer, storing all relevant information of the lazer
+    The path will be appended by the coordinates that the
+    lazer passes through.
+    '''
+
+    def __init__(self, position, direction):
+        self.position = position
+        self.direction = direction
+        self.path = []

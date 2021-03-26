@@ -22,9 +22,9 @@ def check_solution(board, laser_position, laser_direction, targets):
     **Parameters**
         board: *2D list*
             0 - empty/open space on grid 
-            2 - fixed reflect block (A)
-            3 - fixed opaque block (B)
-            4 - fixed refract block (C)
+            2 - reflect block (A)
+            3 - opaque block (B)
+            4 - refract block (C)
         laser_position: *tuple* of lists
             position of lasers on grid 
             (first list is x position, second is y)
@@ -39,14 +39,15 @@ def check_solution(board, laser_position, laser_direction, targets):
            True if the given board is the correct solution or False if
            it is not
     '''
-
+    h = 0 # placeholder for now
+    
 
 def print_solution(file_name, board):
-        '''
-    This function takes in a potential solution of the board layout and
-    and checks to see if the lasers (with their given position and
-    direction) will pass through all target points as they interact
-    with the blocks on the board
+    '''
+    This function takes in the solution board layout and format the solution
+    into a user friendly form. Grid spaces will have o, A, B, or C. o is 
+    empty/open space on grid, A is a reflect block, B is an opaque block, 
+    and C is a refract block.
 
     **Parameters**
         file_name: *str*
@@ -58,11 +59,28 @@ def print_solution(file_name, board):
         None (generates a txt file of the solution board)
     '''
 
-    base_name = "name" # name without bff at end
+    base_name = file_name.split(".bff")[0]
     file_path = base_name + "_solution.txt"
     file = open(file_path, "w+")
-    # stuff here to format description of solution board
-
+    
+    # formatting description of solution board below
+    file.write("Solution board layout:\n\n")
+    file.write("GRID START\n")
+    for i in range(len(board)):
+        board_row = ""
+        index = 1
+        while index < len(board[i]):
+            if board[i][index] == 0:
+                board_row = board_row + "o "
+            elif board[i][index] == 2:
+                board_row = board_row + "A "
+            elif board[i][index] == 3:
+                board_row = board_row + "B "
+            elif board[i][index] == 4:
+                board_row = board_row + "C "
+            index = index + 2
+        file.write(board_row + "\n")
+    file.write("GRID STOP")
     file.close()
 
 

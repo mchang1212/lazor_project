@@ -3,7 +3,7 @@ Michelle Chang, Michael Cho, and Yuecen Jin
 Software Carpentry - Lazor Project
 04/02/2021
 
-Author(s): Michelle Chang
+Author(s): Michelle Chang and Yuecen Jin
 '''
 
 import time
@@ -55,7 +55,7 @@ def check_solution(board, laser_position, laser_direction, targets):
     '''
 
     
-def print_solution(file_name, board):
+def print_solution(file_name, board, laser_path):
     '''
     This function takes in the solution board layout and format the solution
     into a user friendly form. Grid spaces will have o, A, B, or C. o is 
@@ -93,7 +93,18 @@ def print_solution(file_name, board):
                 board_row = board_row + "C "
             index = index + 2
         file.write(board_row + "\n")
-    file.write("GRID STOP")
+    file.write("GRID STOP\n\n")
+
+    # formatting description of laser path(s)
+    for i in range(len(laser_path)):
+        file.write("laser %d path:\n" % (i+1))
+        for j in range(len(laser_path[i])):
+            if j != len(laser_path[i])-1:
+                file.write(str(laser_path[i][j]) + " -> ")
+            else:
+                file.write(str(laser_path[i][j]))
+        file.write("\n\n")
+
     file.close()
 
 
@@ -111,11 +122,13 @@ if __name__ == '__main__':
     # iterating through all the potential boards until we find the solution
     for i in all_boards:
         potential_solution = i
-        if check_solution(potential_solution, laser_position, laser_direction, targets):
+        check = check_solution(potential_solution, lasers, targets)
+        if check[0]:
             solution_board = potential_solution
+            laser_path = check[1]
             break
 
-    print_solution(file_name, solution_board)
+    print_solution(file_name, solution_board, laser_path)
     tf = time.time()
     solution_time = tf - t0
     print("Solution found in %0.5f secs" % solution_time)

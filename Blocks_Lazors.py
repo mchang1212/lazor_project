@@ -26,7 +26,7 @@ class Block:
         **Returns**
             block type
         '''
-        self.b_type = b_type
+        b_type = self.b_type
 
     def block_condition(self, laser_position, laser_direction):
         '''
@@ -38,35 +38,50 @@ class Block:
             position
             direction
         '''
-        b_type = self.b_type
-        if b_type == 1:  # Empty
+        b_type = self.b_position
+        updated_direction = []
+        updated_position = []
+        if b_type == 0:  # Empty
             # Let the lazer pass through. Only position is updated
-            return [((laser_position[0] + laser_direction[0],
-                      laser_position[1] + laser_direction[1]),
-                     laser_direction)]
+            updated_position = [laser_position[0] + laser_direction[0],
+                      laser_position[1] + laser_direction[1]]
+            updated_direction = laser_direction
+            return updated_position, updated_direction
         if b_type == 2:  # Reflect
             # if x coordinate of laser is divisble by 2, laser hits E/W
             # if not, laser hits N/S of block
             if laser_position[0] % 2 == 1:
-                return [(laser_position, (-laser_direction[0],
-                                          laser_direction[1]))]
+                updated_position = laser_position
+                updated_direction = [-laser_direction[0],
+                                          laser_direction[1]]
+                return updated_position, updated_direction
             else:
-                return [(laser_position, (laser_direction[0],
-                                          -laser_direction[1]))]
+                updated_position = laser_position 
+                updated_direction = [laser_direction[0],
+                                          -laser_direction[1]]
+                return updated_position, updated_direction
         elif b_type == 3:  # Opaque
             return 'End of Laser'
         elif b_type == 4:  # Refract
             if laser_position[0] % 2 == 1:
-                return [(laser_position, (-laser_direction[0],
-                    laser_direction[1])), ((laser_position[0] +
-                     laser_direction[0], laser_position[1] +
-                     laser_direction[1]), laser_direction)]
-            else:
-                return [(laser_position, (laser_direction[0],
-                    -laser_direction[1])), ((laser_position[0] +
-                    laser_direction[0], laser_position[1] +
-                    laser_direction[1]), laser_direction)]
+                updated_position = [laser_position] 
+                updated_direction = [(-laser_direction[0], laser_direction[1])]
 
+                updated_position.append= [laser_position[0] + laser_direction[0],
+                      laser_position[1] + laser_direction[1]]
+                updated_direction.append= laser_direction
+
+                return updated_position, updated_direction
+                
+            else:
+                updated_position = laser_position 
+                updated_direction = [laser_direction[0],
+                                          -laser_direction[1]]
+
+                updated_position.append = [laser_position[0] + laser_direction[0],
+                      laser_position[1] + laser_direction[1]]
+                updated_direction.append  = laser_direction
+                return updated_position, updated_direction
 
 class Lazer:
     '''
@@ -79,3 +94,4 @@ class Lazer:
         self.position = position
         self.direction = direction
         self.path = []
+

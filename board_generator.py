@@ -64,23 +64,32 @@ def generator_board(grid, blocks):
             row = positions[j][0]
             col = positions[j][1]
             copy_grid[row][col] = blocks[j]
+            
         # adding in the empty positions between block spaces that
         # lasers can pass through and making all empty spaces of value 0
+        expanded_grid = []
+        length = len(copy_grid[0])
         for j in range(len(copy_grid)):
-            width = len(copy_grid[j])
-            index = 1
-            while index <= 2 * width:
-                copy_grid[j].insert(index, 0)
-                index = index + 2
-            width = len(copy_grid[j])
-            for k in range(width):
-                if copy_grid[j][k] == 1:
-                    copy_grid[j][k] = 0
-        index1 = 1
-        for j in range(len(copy_grid)):
-            vec = [0] * len(copy_grid[j])
-            copy_grid.insert(index1, vec)
-            index1 = index1 + 2    
+            expanded_line = [0]*(2*length+1)
+            for k in range(length):
+                if copy_grid[j][k] != 0 and copy_grid[j][k] != 1:
+                    index = k*2
+                    expanded_line[index] = copy_grid[j][k]
+                    expanded_line[index+1] = copy_grid[j][k]
+                    expanded_line[index+2] = copy_grid[j][k]
+            expanded_grid.append(expanded_line)
+        copy_egrid = copy.deepcopy(expanded_grid)
+        for j in range(len(expanded_grid)):
+            expanded_grid.append([0]*len(expanded_line))
+        expanded_grid.append([0]*len(expanded_line))
+        for j in range(int((len(expanded_grid)-1)/2)):
+            index = j*2
+            vec = copy_egrid[j]
+            if sum(vec) != 0:
+                expanded_grid[index] = vec
+                expanded_grid[index+1] = vec
+                expanded_grid[index+2] = vec
+                
         possible_boards.append(copy_grid)
 
     return(possible_boards)
@@ -91,6 +100,6 @@ if __name__ == '__main__':
     board = read_bff(file_name)
     grid = board[0]
     blocks = board[1]
-    print(grid)
-    print(blocks)
     all_boards = generator_board(grid, blocks)
+    
+    print(all_boards[0])

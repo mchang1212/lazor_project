@@ -39,53 +39,79 @@ def check_solution(board, laser_position, laser_direction, targets):
            True if the given board is the correct solution or False if
            it is not
     '''
-    h = 0  # placeholder for now
-    laserpath = []
-    l= Lazer(laser_position, laser_direction)
-    positionpath = []
-    x = l.position
-     # num of lazors 
-    y = l.direction
-
-    p = l.path 
-    for i in range(len(board)):
-        for j in range(len(board)):
-            if Block(board[i][j]) == 3:
-                break
+    
+    num_lasers = len(laser_position[0])
+    lasers = []
+    new_lasers = []
+    laser_paths = []
+    for i in range(num_lasers):
+        pos = [laser_position[0][i], laser_position[1][i]]
+        direction = [laser_direction[0][i], laser_direction[1][i]]
+        lasers.append(Lazer(pos, direction))
+    for i in range(len(lasers)):
+        position = lasers[i].position
+        direction = lasers[i].direction
+        path = lasers[i].path
+        inbounds = True
+        while inbounds:
+            block = Block(board[position[0]][position[1]])
+            update = block.block_condition(position, direction)
+            if len(update) == 2:
+                # updating with a new position and direction
+                position = update[0]
+                direction = update[1]
+            elif len(update) == 4:
+                position = update[0]
+                direction = update[1]
+                position2 = update[2]
+                direction2 = update[3]
+                new_lasers.append(Lazer(position2, direction2))
             else:
-                
-                aa = Block(board[i][j])
-                position, direction  = aa.block_condition(laser_position, laser_direction)
-                x[0] = x[0]+position[0]
-                y = y+direction
-                p.append(x)
-                positionpath.append(x)
+                break
+            path.append(position)
+            if position[0] >= len(board)-1 or position[1] >= len(board)-1:
+                inbounds = False
+            if position[0] <= 0 or position[1] <= 0:
+                inbounds = False
+        laser_paths.append(path)
 
-    count=0  # iterate through laser path to check if all target points are in the list. If so, then it is the correct solution and we should return True
-    for i in targets:
-        for j in p:
-            if i in j:
-                count += 1
+    new_num_lasers = len(new_lasers)
+    if new_num_lasers != 0:
+        for i in range(len(new_lasers)):
+            position = new_lasers[i].position
+            direction = new_lasers[i].direction
+            path = new_lasers[i].path
+            inbounds = True
+            while inbounds:
+                block = Block(board[position[0]][position[1]])
+                update = block.block_condition(position, direction)
+                # updating with a new position and direction
+                position = update[0]
+                direction = update[1]
+                path.append(position)
+                if position[0] >= len(board)-1 or position[1] >= len(board)-1:
+                    inbounds = False
+                if position[0] <= 0 or position[1] <= 0:
+                    inbounds = False
+            laser_paths.append(path)
+
+    # iterate through laser path(s) to see if target point(s) are included
+    count = 0
+    for i in range(len(laser_paths)):
+        for j in range(len(laser_paths[i])):
+            for k in range(len(targets)):
+                if laser_paths[i][j][0] == targets[k][0] and laser_paths[i][j][1] == targets[k][1]:
+                    count = count + 1
 
     if len(targets) == count:
-        return True
-        # return the laser path(s) so we can print out in solution txt
-        print(p, positionpath)
+        check = True
     else:
-        return False
+        check = False
 
-    '''
-    Notes:
-    Update laser(s) position step by step and then check if laser hits a
-    block. Use classes in Block_Lazors to update laser direction based
-    on the type of block it hits.
-    Each position of the laser will be added to the laser path list.
-    At the end (when a laser hits the boundary of the grid or hits
-    an opaque block), iterate through laser path to see if all
-    target points are in the list. If so, then it is the correct
-    solution and we should return True
+    print(check)
+    print(laser_paths)
 
-    '''
+    return (check, laser_paths)
 
 
 def print_solution(file_name, board):

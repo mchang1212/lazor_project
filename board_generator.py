@@ -76,6 +76,11 @@ def generator_board(grid, blocks):
             for k in range(width):
                 if copy_grid[j][k] == 1:
                     copy_grid[j][k] = 0
+        index1 = 1
+        for j in range(len(copy_grid)):
+            vec = [0] * len(copy_grid[j])
+            copy_grid.insert(index1, vec)
+            index1 = index1 + 2    
         possible_boards.append(copy_grid)
 
     return(possible_boards)

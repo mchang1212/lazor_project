@@ -64,24 +64,25 @@ class Block:
             return 'End of Laser'
         elif b_type == 4:  # Refract
             if laser_position[0] % 2 == 1:
-                updated_position = [laser_position] 
-                updated_direction = [(-laser_direction[0], laser_direction[1])]
+                updated_position = laser_position 
+                updated_direction = [-laser_direction[0], laser_direction[1]]
 
-                updated_position.append= [laser_position[0] + laser_direction[0],
+                updated_position2 = [laser_position[0] + laser_direction[0],
                       laser_position[1] + laser_direction[1]]
-                updated_direction.append= laser_direction
+                updated_direction2 = laser_direction
 
-                return updated_position, updated_direction
+                return updated_position, updated_direction, updated_position2, updated_direction2
                 
             else:
                 updated_position = laser_position 
                 updated_direction = [laser_direction[0],
                                           -laser_direction[1]]
 
-                updated_position.append = [laser_position[0] + laser_direction[0],
+                updated_position2 = [laser_position[0] + laser_direction[0],
                       laser_position[1] + laser_direction[1]]
-                updated_direction.append  = laser_direction
-                return updated_position, updated_direction
+                updated_direction2 = laser_direction
+
+                return updated_position, updated_direction, updated_position2, updated_direction2
 
 class Lazer:
     '''

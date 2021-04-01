@@ -67,13 +67,13 @@ def generator_board(grid, blocks):
         # adding in the empty positions between block spaces that
         # lasers can pass through and making all empty spaces of value 0
         for j in range(len(copy_grid)):
-            length = len(copy_grid[j])
-            index = 0
-            while index <= 2*length:
+            width = len(copy_grid[j])
+            index = 1
+            while index <= 2 * width:
                 copy_grid[j].insert(index, 0)
                 index = index + 2
-            length = len(copy_grid[j])
-            for k in range(length):
+            width = len(copy_grid[j])
+            for k in range(width):
                 if copy_grid[j][k] == 1:
                     copy_grid[j][k] = 0
         possible_boards.append(copy_grid)

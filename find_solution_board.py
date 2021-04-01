@@ -108,39 +108,57 @@ def print_solution(file_name, board):
     base_name=file_name.split(".bff")[0]
     file_path=base_name + "_solution.txt"
     file=open(file_path, "w+")
+    
+    index = 1
+    cut_board = []
+    length = len(board)
+    while index < length:
+        cut_board.append(board[index])
+        index = index + 2
 
-    # formatting description of solution board below
+    # formatting description of solution board
     file.write("Solution board layout:\n\n")
     file.write("GRID START\n")
-    for i in range(len(board)):
-        board_row=""
-        index=1
-        while index < len(board[i]):
-            if board[i][index] == 0:
-                board_row=board_row + "o "
-            elif board[i][index] == 2:
-                board_row=board_row + "A "
-            elif board[i][index] == 3:
-                board_row=board_row + "B "
-            elif board[i][index] == 4:
-                board_row=board_row + "C "
-            index=index + 2
+    for i in range(len(cut_board)):
+        board_row = ""
+        index = 1
+        while index < len(cut_board[i]):
+            if cut_board[i][index] == 0:
+                board_row = board_row + "o "
+            elif cut_board[i][index] == 2:
+                board_row = board_row + "A "
+            elif cut_board[i][index] == 3:
+                board_row = board_row + "B "
+            elif cut_board[i][index] == 4:
+                board_row = board_row + "C "
+            index = index + 2
         file.write(board_row + "\n")
-    file.write("GRID STOP")
+    file.write("GRID STOP\n\n")
+    
+    # formatting description of laser path(s)
+    for i in range(len(laser_paths)):
+        file.write("laser %d path:\n" % (i+1))
+        for j in range(len(laser_paths[i])):
+            if j != len(laser_paths[i])-1:
+                file.write(str(laser_paths[i][j]) + " -> ")
+            else:
+                file.write(str(laser_paths[i][j]))
+        file.write("\n\n")
+        
     file.close()
 
 
 if __name__ == '__main__':
-    file_name="mad_1.bff"
-    board=read_bff(file_name)
-    grid=board[0]
-    blocks=board[1]
-    laser_position=board[2]
-    laser_direction=board[3]
-    targets=board[4]
-    t0=time.time()
+    file_name = "mad_1.bff"
+    board = read_bff(file_name)
+    grid =board[0]
+    blocks = board[1]
+    laser_position = board[2]
+    laser_direction = board[3]
+    targets = board[4]
+    t0 = time.time()
 
-    all_boards=generator_board(grid, blocks)
+    all_boards = generator_board(grid, blocks)
     # iterating through all the potential boards until we find the solution
     for i in all_boards:
         potential_solution=i
@@ -149,6 +167,6 @@ if __name__ == '__main__':
             break
 
     print_solution(file_name, solution_board)
-    tf=time.time()
-    solution_time=tf - t0
+    tf = time.time()
+    solution_time = tf - t0
     print("Solution found in %0.5f secs" % solution_time)

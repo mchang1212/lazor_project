@@ -11,7 +11,31 @@ from read_bff import read_bff
 from board_generator import generator_board
 from Blocks_Lazors import Block, Lazer
 
+def inbounds(x, y, x_dimension, y_dimension):
+    '''
+    Validate if the laser positions specified (x and y) are within the grid.
 
+    **Parameters**
+        x: *int*
+            An x coordinate to check if it resides within the grid.
+        y: *int*
+            A y coordinate to check if it resides within the grid.
+        x_dimension: *int*
+            The boundary of x direction
+        y_dimension: *int*
+            The boundary of y direction
+
+    **Returns**
+        valid: *bool*
+            Whether the coordiantes are valid (True) or not (True).
+    '''
+
+    if x > 0 and x < x_dimension and y > 0 and y < y_dimension:
+        return True
+    else:
+        return False
+    
+    
 def check_solution(board, laser_position, laser_direction, targets):
     '''
     This function takes in a potential solution of the board layout and
@@ -52,27 +76,34 @@ def check_solution(board, laser_position, laser_direction, targets):
         position = lasers[i].position
         direction = lasers[i].direction
         path = lasers[i].path
-        inbounds = True
-        while inbounds:
+        if len(path) == 1:
+            position = [position[0] + direction[0],
+                      position[1] + direction[1]]
+            path.append(position)
+        while inbounds(position[0], position[1], len(board), len(board)):
+            print(path)
+            print(board[position[0]][position[1]])
             block = Block(board[position[0]][position[1]])
             update = block.block_condition(position, direction)
             if len(update) == 2:
                 # updating with a new position and direction
                 position = update[0]
                 direction = update[1]
+                path.append(position)
             elif len(update) == 4:
                 position = update[0]
                 direction = update[1]
                 position2 = update[2]
                 direction2 = update[3]
                 new_lasers.append(Lazer(position2, direction2))
+                path.append(position)
+                position = [position[0] + direction[0],
+                          position[1] + direction[1]]
+                path.append(position)            
             else:
                 break
-            path.append(position)
-            if position[0] >= len(board)-1 or position[1] >= len(board)-1:
-                inbounds = False
-            if position[0] <= 0 or position[1] <= 0:
-                inbounds = False
+            if inbounds(position[0], position[1], len(board), len(board)) == False:
+                break
         laser_paths.append(path)
 
     new_num_lasers = len(new_lasers)
@@ -81,18 +112,22 @@ def check_solution(board, laser_position, laser_direction, targets):
             position = new_lasers[i].position
             direction = new_lasers[i].direction
             path = new_lasers[i].path
-            inbounds = True
-            while inbounds:
+            if len(path) == 1:
+                position = [position[0] + direction[0],
+                          position[1] + direction[1]]
+                path.append(position)
+                position = [position[0] + direction[0],
+                          position[1] + direction[1]]
+                path.append(position)
+            while inbounds(position[0], position[1], len(board), len(board)):
                 block = Block(board[position[0]][position[1]])
                 update = block.block_condition(position, direction)
                 # updating with a new position and direction
                 position = update[0]
                 direction = update[1]
+                if inbounds(position[0], position[1], len(board), len(board)) == False:
+                    break
                 path.append(position)
-                if position[0] >= len(board)-1 or position[1] >= len(board)-1:
-                    inbounds = False
-                if position[0] <= 0 or position[1] <= 0:
-                    inbounds = False
             laser_paths.append(path)
 
     # iterate through laser path(s) to see if target point(s) are included

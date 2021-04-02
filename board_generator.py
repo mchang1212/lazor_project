@@ -97,34 +97,7 @@ def generator_board(grid, blocks):
                 half = int((len(before)-1)/2)
                 if sum(before) != 0 and sum(after) != 0:
                     combined = before[0:half] + after[half:len(after)]
-                    expanded_grid[j] = combined
-
-        # # reformatting the grid
-        # odd = copy.deepcopy(expanded_grid[1::2]) # odd rows
-        # for j in range(len(odd)):
-        #     col = 1
-        #     length = len(odd[0])
-        #     while col < length:
-        #         odd[j][col] = 0
-        #         col = col + 2
-        # even = copy.deepcopy(expanded_grid[::2]) # even rows
-        # for j in range(len(even)):
-        #     col = 0
-        #     length = len(even[0])
-        #     while col < length:
-        #         even[j][col] = 0
-        #         col = col + 2 
-
-        # reformat_grid = []
-        # odd_index = 0
-        # even_index = 0
-        # for j in range(len(even)+len(odd)):
-        #     if j % 2 == 1: # odd row
-        #         reformat_grid.append(odd[odd_index])
-        #         odd_index = odd_index + 1
-        #     if j % 2 == 0: # even row
-        #         reformat_grid.append(even[even_index])
-        #         even_index = even_index + 1          
+                    expanded_grid[j] = combined       
     
         possible_boards.append(expanded_grid)
 

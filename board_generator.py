@@ -47,13 +47,13 @@ def generator_board(grid, blocks):
     for i in range(row_num):
         for j in range(col_num):
             if grid[i][j] == 1:
-                possible_spots.append([i,j])
+                possible_spots.append([i, j])
     perm = permutations(possible_spots, len(blocks))
     # perm is all the possible combinations of positions each
-    # available block can be placed 
+    # available block can be placed
 
     temp_perm = []
-    for i in list(perm): 
+    for i in list(perm):
         temp_perm.append(list(i))
 
     # generating and storing all the boards that can be made
@@ -64,7 +64,7 @@ def generator_board(grid, blocks):
             row = positions[j][0]
             col = positions[j][1]
             copy_grid[row][col] = blocks[j]
-            
+
         # adding in the empty positions between block spaces that
         # lasers can pass through and making all empty spaces of value 0
         expanded_grid = []
@@ -89,44 +89,53 @@ def generator_board(grid, blocks):
                 expanded_grid[index] = vec
                 expanded_grid[index+1] = vec
                 expanded_grid[index+2] = vec
-               
-        # reformatting the grid
-        odd = copy.deepcopy(expanded_grid[1::2]) # odd rows
-        for j in range(len(odd)):
-            col = 1
-            length = len(odd[0])
-            while col < length:
-                odd[j][col] = 0
-                col = col + 2
-        even = copy.deepcopy(expanded_grid[::2]) # even rows
-        for j in range(len(even)):
-            col = 0
-            length = len(even[0])
-            while col < length:
-                even[j][col] = 0
-                col = col + 2 
 
-        reformat_grid = []
-        odd_index = 0
-        even_index = 0
-        for j in range(len(even)+len(odd)):
-            if j % 2 == 1: # odd row
-                reformat_grid.append(odd[odd_index])
-                odd_index = odd_index + 1
-            if j % 2 == 0: # even row
-                reformat_grid.append(even[even_index])
-                even_index = even_index + 1          
+        for j in range(len(expanded_grid)):
+            if j % 2 == 0 and j > 0 and j < len(expanded_grid)-1:
+                before = copy.deepcopy(expanded_grid[j-1])
+                after = copy.deepcopy(expanded_grid[j+1])
+                half = int((len(before)-1)/2)
+                if sum(before) != 0 and sum(after) != 0:
+                    combined = before[0:half] + after[half:len(after)]
+                    expanded_grid[j] = combined
+
+        # # reformatting the grid
+        # odd = copy.deepcopy(expanded_grid[1::2]) # odd rows
+        # for j in range(len(odd)):
+        #     col = 1
+        #     length = len(odd[0])
+        #     while col < length:
+        #         odd[j][col] = 0
+        #         col = col + 2
+        # even = copy.deepcopy(expanded_grid[::2]) # even rows
+        # for j in range(len(even)):
+        #     col = 0
+        #     length = len(even[0])
+        #     while col < length:
+        #         even[j][col] = 0
+        #         col = col + 2 
+
+        # reformat_grid = []
+        # odd_index = 0
+        # even_index = 0
+        # for j in range(len(even)+len(odd)):
+        #     if j % 2 == 1: # odd row
+        #         reformat_grid.append(odd[odd_index])
+        #         odd_index = odd_index + 1
+        #     if j % 2 == 0: # even row
+        #         reformat_grid.append(even[even_index])
+        #         even_index = even_index + 1          
     
-        possible_boards.append(reformat_grid)
+        possible_boards.append(expanded_grid)
 
     return(possible_boards)
 
 
 if __name__ == '__main__':
-    file_name = "/Users/michellechang/Desktop/boards/mad_1.bff"
+    file_name = "/Users/michellechang/Desktop/boards/tiny_5.bff"
     board = read_bff(file_name)
     grid = board[0]
     blocks = board[1]
     all_boards = generator_board(grid, blocks)
-    
-    print(all_boards[0])
+
+    print(all_boards[124])

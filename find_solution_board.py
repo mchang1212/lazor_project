@@ -80,17 +80,25 @@ def check_solution(board, laser_position, laser_direction, targets):
         direction = lasers[i].direction
         path = lasers[i].path
 
+        # this means laser starts at the board boundaries
+        if inbounds(position[0], position[1], width, height) == False:
+            position[0] = position[0]+direction[0]
+            position[1] = position[1]+direction[1]
+
         while inbounds(position[0], position[1], width, height):
-            # print(position)
-            # print(direction)
-            # print(board[position[0]][position[1]])
-            block = Block(board[position[0]][position[1]])
+#             print(position)
+#             print(direction)
+#             print(board[position[1]][position[0]])
+            block = Block(board[position[1]][position[0]])
             update = block.block_condition(position, direction)
             if len(update) == 2:
                 # updating with a new position and direction
                 position = update[0]
                 direction = update[1]
                 path.append(position)
+                if inbounds(position[0], position[1], width, height):
+                    position = [position[0]+direction[0],position[1]+direction[1]]
+                    path.append(position)
             elif len(update) == 4:
                 position = update[0]
                 direction = update[1]
@@ -98,14 +106,13 @@ def check_solution(board, laser_position, laser_direction, targets):
                 direction2 = update[3]
                 new_lasers.append(Lazer(position2, direction2))
                 path.append(position)
+                if inbounds(position[0], position[1], width, height):
+                    position = [position[0]+direction[0],position[1]+direction[1]]
+                    path.append(position)
             else:
                 break
             if inbounds(position[0], position[1], width, height) == False:
                 break
-            if len(path)>30:
-                check = False
-                laser_paths = []
-                return (check, laser_paths)
         laser_paths.append(path)
 
     new_num_lasers = len(new_lasers)
@@ -115,20 +122,30 @@ def check_solution(board, laser_position, laser_direction, targets):
             direction = new_lasers[i].direction
             path = new_lasers[i].path
             while inbounds(position[0], position[1], width, height):
-                block = Block(board[position[0]][position[1]])
+                block = Block(board[position[1]][position[0]])
                 update = block.block_condition(position, direction)
-                # updating with a new position and direction
-                position = update[0]
-                direction = update[1]
-                if inbounds(position[0], position[1], width, height) == False:
+                if len(update) == 2:
+                    # updating with a new position and direction
+                    position = update[0]
+                    direction = update[1]
+                    path.append(position)
+                    if inbounds(position[0], position[1], width, height):
+                        position = [position[0]+direction[0],position[1]+direction[1]]
+                        path.append(position)
+                elif len(update) == 4:
+                    position = update[0]
+                    direction = update[1]
+                    position2 = update[2]
+                    direction2 = update[3]
+                    new_lasers.append(Lazer(position2, direction2))
+                    path.append(position)
+                    if inbounds(position[0], position[1], width, height):
+                        position = [position[0]+direction[0],position[1]+direction[1]]
+                        path.append(position)
+                else:
                     break
-                path.append(position)
-                if len(path)>30:
-                    check = False
-                    laser_paths = []
-                    print(check)
-                    print(laser_paths)
-                    return (check, laser_paths)
+                    if inbounds(position[0], position[1], width, height) == False:
+                        break
             laser_paths.append(path)
 
     # iterate through laser path(s) to see if target point(s) are included
@@ -145,8 +162,8 @@ def check_solution(board, laser_position, laser_direction, targets):
     else:
         check = False
 
-    print(check)
-    print(laser_paths)
+#     print(check)
+#     print(laser_paths)
 
     return (check, laser_paths)
 

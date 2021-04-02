@@ -60,8 +60,10 @@ class Block:
                 updated_direction = [laser_direction[0],
                                           -laser_direction[1]]
                 return updated_position, updated_direction
-        elif b_type == 3:  # Opaque
-            return 'End of Laser'
+      elif b_type == 3:  # Opaque
+            # end of laser
+            updated_position = [-1,-1]
+            return updated_position, laser_direction
         elif b_type == 4:  # Refract
             if laser_position[0] % 2 == 1:
                 updated_position = laser_position 

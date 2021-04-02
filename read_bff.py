@@ -1,21 +1,19 @@
 '''
-Michelle Chang, Michael Cho, and Yuecen Jin
+Michelle Chang, Hyunwoo (Michael) Cho, and Yuecen Jin
 Software Carpentry - Lazor Project
 04/02/2021
-
-This file was coded by Michelle Chang (with contributions from Michael Cho)
+This file was coded by Michelle Chang and Hyunwoo (Michael) Cho
 '''
+import re
 
 
 def read_bff(file_name):
     '''
     This function reads an input bff file and stores information
     into respective objects
-
     **Parameters**
             file_name: *str*
                 name of bff file of interest
-
     **Returns**
             grid: *2D list*
                     0 - space on grid but no blocks allowed (x)
@@ -28,23 +26,23 @@ def read_bff(file_name):
                     2 indicates A or reflect block, 3 is A or opaque block,
                     4 is C or refract block
             laser_position: *tuple* of lists
-                    position of lasers on grid 
+                    position of lasers on grid
                     (first list is x position, second is y)
             laser_direction: *tuple* of lists
-                    direction of lasers on grid 
+                    direction of lasers on grid
                     (first list is x direction, second is y)
             targets: *list* of tuples
                     the target points in grid we wish the lasers to intersect
     '''
 
     file = open(file_name)
-    info = file.readlines()
+    info = file.read()
+    information = file.readlines()
     file.close()
 
     # initializing objects we need to store information
-    grid = []
-    grid_temp = []
-    grid_line = []
+    rows = 0
+    columns = 0
     blocks = []
     laser_x = []
     laser_y = []
@@ -52,39 +50,53 @@ def read_bff(file_name):
     laser_dy = []
     targets = []
 
+    keyword = 'GRID START.*GRID STOP'
     search1 = "GRID START"
     search2 = "GRID STOP"
     search3 = "L"
     search4 = "P"
     mark = False
 
-    # creating a temporary grid list to next parse through
-    for i, line in enumerate(info):
-        if mark:
-            if any([x in line for x in ['x', 'o', 'A', 'B', 'C']]):
-                grid_temp.append(line)
-            if search2 in line:
-                mark = False
-        if search1 in line:
-            mark = True
+    grid_import = re.search(keyword, info, re.DOTALL)
+    grid_text = info[grid_import.start():grid_import.end()]
+    file.close()
+    numRows = grid_text.split('\n')
+    numRows.remove('GRID START')
+    numRows.remove('GRID STOP')
+    rows = len(numRows)
+    oneline = re.search('([oxABC] *)+[oxABC]', info)
+    oneline = info[oneline.start():oneline.end()]
+    for i in oneline:
+        if i == 'o' or i == 'x' or i == 'A' or i == 'B' or i == 'C':
+            columns += 1
 
-    # parsing through temporary grid list and making grid layout
-    for i in range(len(grid_temp)):
-        for j in range(len(grid_temp[i])):
-            if grid_temp[i][j] == 'x':
-                grid_line.append(0)
-            elif grid_temp[i][j] == 'o':
-                grid_line.append(1)
-            elif grid_temp[i][j] == 'A':
-                grid_line.append(2)
-            elif grid_temp[i][j] == 'B':
-                grid_line.append(3)
-            elif grid_temp[i][j] == 'C':
-                grid_line.append(4)
-        grid.append(grid_line)
-        grid_line = []
+    grid = [
+        [0 for i in range(2 * columns + 1)]
+        for j in range(2 * rows + 1)
+    ]
+    # Indicate fixed blocks, empty spaces and open spaces
+    x_cor = -1
+    for i in numRows:
+        y_cor = 0
+        x_cor += 1
+        for space in i:
+            if space == 'o':
+                y_cor += 1
+                grid[2 * x_cor + 1][2 * y_cor - 1] = 1
+            if space == 'x':
+                y_cor += 1
+                grid[2 * x_cor + 1][2 * y_cor - 1] = 0
+            if space == 'A':
+                y_cor += 1
+                grid[2 * x_cor + 1][2 * y_cor - 1] = 2
+            if space == 'B':
+                y_cor += 1
+                grid[2 * x_cor + 1][2 * y_cor - 1] = 3
+            if space == 'C':
+                y_cor += 1
+                grid[2 * x_cor + 1][2 * y_cor - 1] = 4
 
-    for i, line in enumerate(info):
+    for i, line in enumerate(information):
         exception = '#'
         # a comment in bff will be ignored
         # finding and storing information about blocks
@@ -100,7 +112,7 @@ def read_bff(file_name):
                     for j in range(block_num):
                         for k in range(len(search5)):
                             if search5[k] in line:
-                                blocks.append(k+2)
+                                blocks.append(k + 2)
             if search3 in line:
                 mark = False
         if search2 in line:
@@ -134,20 +146,10 @@ def read_bff(file_name):
     laser_position = laser_x, laser_y
     laser_direction = laser_dx, laser_dy
 
-    # print("grid is " + str(grid))
-    # print("blocks are " + str(blocks))
-    # print("laser positions are " + str(laser_position))
-    # print("laser directions are " + str(laser_direction))
-    # print("target points are " + str(targets))
-    
     return (grid, blocks, laser_position, laser_direction, targets)
 
 
 if __name__ == '__main__':
-    file_name = "/Users/michellechang/Desktop/boards/mad_1.bff"
-    board = read_bff(file_name)
-    grid = board[0]
-    blocks = board[1]
-    laser_position = board[2]
-    laser_direction = board[3]
-    targets = board[4]
+    file_name = "yarn_5.bff"
+    (grid, blocks, laser_pos, laser_dir, targets) = read_bff(file_name)
+    print(grid)

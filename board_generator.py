@@ -89,8 +89,35 @@ def generator_board(grid, blocks):
                 expanded_grid[index] = vec
                 expanded_grid[index+1] = vec
                 expanded_grid[index+2] = vec
-                
-        possible_boards.append(copy_grid)
+               
+        # reformatting the grid
+        odd = copy.deepcopy(expanded_grid[1::2]) # odd rows
+        for j in range(len(odd)):
+            col = 1
+            length = len(odd[0])
+            while col < length:
+                odd[j][col] = 0
+                col = col + 2
+        even = copy.deepcopy(expanded_grid[::2]) # even rows
+        for j in range(len(even)):
+            col = 0
+            length = len(even[0])
+            while col < length:
+                even[j][col] = 0
+                col = col + 2 
+
+        reformat_grid = []
+        odd_index = 0
+        even_index = 0
+        for j in range(len(even)+len(odd)):
+            if j % 2 == 1: # odd row
+                reformat_grid.append(odd[odd_index])
+                odd_index = odd_index + 1
+            if j % 2 == 0: # even row
+                reformat_grid.append(even[even_index])
+                even_index = even_index + 1          
+    
+        possible_boards.append(reformat_grid)
 
     return(possible_boards)
 

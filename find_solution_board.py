@@ -13,7 +13,7 @@ from Blocks_Lazors import Block, Lazer
 
 def inbounds(x, y, x_dimension, y_dimension):
     '''
-    Validate if the laser positions specified (x and y) are within the grid.
+    Validate if the laser positions specified(x and y) are within the grid.
 
     **Parameters**
         x: *int*
@@ -27,35 +27,35 @@ def inbounds(x, y, x_dimension, y_dimension):
 
     **Returns**
         valid: *bool*
-            Whether the coordiantes are valid (True) or not (True).
+            Whether the coordiantes are valid(True) or not (True).
     '''
 
     if x > 0 and x < x_dimension and y > 0 and y < y_dimension:
         return True
     else:
         return False
-    
-    
+
+
 def check_solution(board, laser_position, laser_direction, targets):
     '''
     This function takes in a potential solution of the board layout and
-    and checks to see if the lasers (with their given position and
+    and checks to see if the lasers(with their given position and
     direction) will pass through all target points as they interact
     with the blocks on the board
 
     **Parameters**
         board: *2D list*
             0 - empty/open space on grid
-            2 - reflect block (A)
-            3 - opaque block (B)
-            4 - refract block (C)
-        laser_position: *lists* of lists
+            2 - reflect block(A)
+            3 - opaque block(B)
+            4 - refract block(C)
+        laser_position: *tuple * of lists
             position of lasers on grid
             (first list is x position, second is y)
-        laser_direction: *tuple* of lists
+        laser_direction: *tuple * of lists
             direction of lasers on grid
             (first list is x direction, second is y)
-        targets: *list* of tuples
+        targets: *list * of tuples
             the target points in grid we wish the lasers to intersect
 
     **Returns**
@@ -63,7 +63,10 @@ def check_solution(board, laser_position, laser_direction, targets):
            True if the given board is the correct solution or False if
            it is not
     '''
-    
+
+    width = len(board[0])
+    height = len(board)
+
     num_lasers = len(laser_position[0])
     lasers = []
     new_lasers = []
@@ -76,13 +79,11 @@ def check_solution(board, laser_position, laser_direction, targets):
         position = lasers[i].position
         direction = lasers[i].direction
         path = lasers[i].path
-        if len(path) == 1:
-            position = [position[0] + direction[0],
-                      position[1] + direction[1]]
-            path.append(position)
-        while inbounds(position[0], position[1], len(board), len(board)):
-            print(path)
-            print(board[position[0]][position[1]])
+
+        while inbounds(position[0], position[1], width, height):
+            # print(position)
+            # print(direction)
+            # print(board[position[0]][position[1]])
             block = Block(board[position[0]][position[1]])
             update = block.block_condition(position, direction)
             if len(update) == 2:
@@ -97,13 +98,14 @@ def check_solution(board, laser_position, laser_direction, targets):
                 direction2 = update[3]
                 new_lasers.append(Lazer(position2, direction2))
                 path.append(position)
-                position = [position[0] + direction[0],
-                          position[1] + direction[1]]
-                path.append(position)            
             else:
                 break
-            if inbounds(position[0], position[1], len(board), len(board)) == False:
+            if inbounds(position[0], position[1], width, height) == False:
                 break
+            if len(path)>30:
+                check = False
+                laser_paths = []
+                return (check, laser_paths)
         laser_paths.append(path)
 
     new_num_lasers = len(new_lasers)
@@ -112,33 +114,33 @@ def check_solution(board, laser_position, laser_direction, targets):
             position = new_lasers[i].position
             direction = new_lasers[i].direction
             path = new_lasers[i].path
-            if len(path) == 1:
-                position = [position[0] + direction[0],
-                          position[1] + direction[1]]
-                path.append(position)
-                position = [position[0] + direction[0],
-                          position[1] + direction[1]]
-                path.append(position)
-            while inbounds(position[0], position[1], len(board), len(board)):
+            while inbounds(position[0], position[1], width, height):
                 block = Block(board[position[0]][position[1]])
                 update = block.block_condition(position, direction)
                 # updating with a new position and direction
                 position = update[0]
                 direction = update[1]
-                if inbounds(position[0], position[1], len(board), len(board)) == False:
+                if inbounds(position[0], position[1], width, height) == False:
                     break
                 path.append(position)
+                if len(path)>30:
+                    check = False
+                    laser_paths = []
+                    print(check)
+                    print(laser_paths)
+                    return (check, laser_paths)
             laser_paths.append(path)
 
     # iterate through laser path(s) to see if target point(s) are included
-    count = 0
-    for i in range(len(laser_paths)):
-        for j in range(len(laser_paths[i])):
-            for k in range(len(targets)):
-                if laser_paths[i][j][0] == targets[k][0] and laser_paths[i][j][1] == targets[k][1]:
-                    count = count + 1
+    found_targets = []
+    for i in range(len(targets)):
+        for j in range(len(laser_paths)):
+            for k in range(len(laser_paths[j])):
+                if laser_paths[j][k] == list(targets[i]):
+                    if targets[i] not in found_targets:
+                        found_targets.append(targets[i])
 
-    if len(targets) == count:
+    if len(targets) == len(found_targets):
         check = True
     else:
         check = False
@@ -149,7 +151,7 @@ def check_solution(board, laser_position, laser_direction, targets):
     return (check, laser_paths)
 
 
-def print_solution(file_name, board):
+def print_solution(file_name, board, laser_paths, targets):
     '''
     This function takes in the solution board layout and format the solution
     into a user friendly form. Grid spaces will have o, A, B, or C. o is
@@ -161,15 +163,18 @@ def print_solution(file_name, board):
             name of bff file of interest
         board: *2D list*
             the particular layout that solves the board
+        laser_path: *list * of lists
+            points on board that laser(s) will pass through with the
+            given board layout
 
     **Returns**
         None (generates a txt file of the solution board)
     '''
 
-    base_name=file_name.split(".bff")[0]
-    file_path=base_name + "_solution.txt"
-    file=open(file_path, "w+")
-    
+    base_name = file_name.split(".bff")[0]
+    file_path = base_name + "_solution.txt"
+    file = open(file_path, "w+")
+
     index = 1
     cut_board = []
     length = len(board)
@@ -195,7 +200,7 @@ def print_solution(file_name, board):
             index = index + 2
         file.write(board_row + "\n")
     file.write("GRID STOP\n\n")
-    
+
     # formatting description of laser path(s)
     for i in range(len(laser_paths)):
         file.write("laser %d path:\n" % (i+1))
@@ -205,14 +210,16 @@ def print_solution(file_name, board):
             else:
                 file.write(str(laser_paths[i][j]))
         file.write("\n\n")
-        
+
+    file.write("Target points are: " + str(targets))
+
     file.close()
 
 
 if __name__ == '__main__':
-    file_name = "mad_1.bff"
+    file_name = "/Users/michellechang/Desktop/boards/dark_1.bff"
     board = read_bff(file_name)
-    grid =board[0]
+    grid = board[0]
     blocks = board[1]
     laser_position = board[2]
     laser_direction = board[3]
@@ -222,12 +229,15 @@ if __name__ == '__main__':
     all_boards = generator_board(grid, blocks)
     # iterating through all the potential boards until we find the solution
     for i in all_boards:
-        potential_solution=i
-        if check_solution(potential_solution, laser_position, laser_direction, targets):
-            solution_board=potential_solution
+        potential_solution = i
+        check = check_solution(
+            potential_solution, laser_position, laser_direction, targets)
+        if check[0]:
+            solution_board = potential_solution
+            laser_paths = check[1]
             break
 
-    print_solution(file_name, solution_board)
+    print_solution(file_name, solution_board, laser_paths, targets)
     tf = time.time()
     solution_time = tf - t0
     print("Solution found in %0.5f secs" % solution_time)

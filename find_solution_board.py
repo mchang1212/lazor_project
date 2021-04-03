@@ -5,7 +5,6 @@ Software Carpentry - Lazor Project
 
 Author(s): Michelle Chang and Yuecen Jin
 '''
-
 import time
 from read_bff import read_bff
 from board_generator import generator_board
@@ -82,11 +81,12 @@ def check_solution(board, laser_position, laser_direction, targets):
         path = lasers[i].path
 
         # this means laser starts at the board boundaries
-        if inbounds(position[0], position[1], width, height) == False or board[position[1]][position[0]] != 0:
+        if inbounds(position[0], position[1], height,
+                    width) == False or board[position[1]][position[0]] != 0:
             position[0] = position[0]+direction[0]
             position[1] = position[1]+direction[1]
 
-        while inbounds(position[0], position[1], width, height):
+        while inbounds(position[0], position[1], height, width):
             block = Block(board[position[1]][position[0]])
             update = block.block_condition(position, direction)
             if len(update) == 2:
@@ -94,8 +94,9 @@ def check_solution(board, laser_position, laser_direction, targets):
                 position = update[0]
                 direction = update[1]
                 path.append(position)
-                if inbounds(position[0], position[1], width, height):
-                    position = [position[0]+direction[0],position[1]+direction[1]]
+                if inbounds(position[0], position[1], height, width):
+                    position = [position[0]+direction[0],
+                                position[1]+direction[1]]
                     path.append(position)
             elif len(update) == 4:
                 position = update[0]
@@ -104,8 +105,9 @@ def check_solution(board, laser_position, laser_direction, targets):
                 direction2 = update[3]
                 new_lasers.append(Lazer(position2, direction2))
                 path.append(position)
-                if inbounds(position[0], position[1], width, height):
-                    position = [position[0]+direction[0],position[1]+direction[1]]
+                if inbounds(position[0], position[1], height, width):
+                    position = [position[0]+direction[0],
+                                position[1]+direction[1]]
                     path.append(position)
             else:
                 break
@@ -119,7 +121,7 @@ def check_solution(board, laser_position, laser_direction, targets):
             position = new_lasers[i].position
             direction = new_lasers[i].direction
             path = new_lasers[i].path
-            while inbounds(position[0], position[1], width, height):
+            while inbounds(position[0], position[1], height, width):
                 block = Block(board[position[1]][position[0]])
                 update = block.block_condition(position, direction)
                 if len(update) == 2:
@@ -127,8 +129,9 @@ def check_solution(board, laser_position, laser_direction, targets):
                     position = update[0]
                     direction = update[1]
                     path.append(position)
-                    if inbounds(position[0], position[1], width, height):
-                        position = [position[0]+direction[0],position[1]+direction[1]]
+                    if inbounds(position[0], position[1], height, width):
+                        position = [position[0]+direction[0],
+                                    position[1]+direction[1]]
                         path.append(position)
                 elif len(update) == 4:
                     position = update[0]
@@ -137,12 +140,14 @@ def check_solution(board, laser_position, laser_direction, targets):
                     direction2 = update[3]
                     new_lasers.append(Lazer(position2, direction2))
                     path.append(position)
-                    if inbounds(position[0], position[1], width, height):
-                        position = [position[0]+direction[0],position[1]+direction[1]]
+                    if inbounds(position[0], position[1], height, width):
+                        position = [position[0]+direction[0],
+                                    position[1]+direction[1]]
                         path.append(position)
                 else:
                     break
-                    if inbounds(position[0], position[1], width, height) == False:
+                    if inbounds(position[0], position[1],
+                                height, width) == False:
                         break
             laser_paths.append(path)
 
@@ -160,8 +165,8 @@ def check_solution(board, laser_position, laser_direction, targets):
     else:
         check = False
 
-    print(check)
-    print(laser_paths)
+    # print(check)
+    # print(laser_paths)
 
     return (check, laser_paths)
 
@@ -232,7 +237,7 @@ def print_solution(file_name, board, laser_paths, targets):
 
 
 if __name__ == '__main__':
-    file_name = "/Users/michellechang/Desktop/boards/yarn_5.bff"
+    file_name = "/Users/michellechang/Desktop/boards/mad_1.bff"
     board = read_bff(file_name)
     grid = board[0]
     blocks = board[1]
@@ -251,8 +256,10 @@ if __name__ == '__main__':
             solution_board = potential_solution
             laser_paths = check[1]
             break
-
     tf = time.time()
     solution_time = tf - t0
-    print("Solution found in %0.5f secs" % solution_time)
-    print_solution(file_name, solution_board, laser_paths, targets)
+    if 'solution_board' in locals():
+        print_solution(file_name, solution_board, laser_paths, targets)
+        print("Solution found in %0.5f secs" % solution_time)
+    else:
+        print("No solution was found in %0.5f secs" % solution_time)

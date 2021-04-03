@@ -254,7 +254,7 @@ if __name__ == '__main__':
             laser_paths = check[1]
             break
 
-    print_solution(file_name, solution_board, laser_paths, targets)
     tf = time.time()
     solution_time = tf - t0
     print("Solution found in %0.5f secs" % solution_time)
+    print_solution(file_name, solution_board, laser_paths, targets)

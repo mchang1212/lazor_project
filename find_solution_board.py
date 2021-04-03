@@ -3,7 +3,7 @@ Michelle Chang, Michael Cho, and Yuecen Jin
 Software Carpentry - Lazor Project
 04/02/2021
 
-Author(s): Michelle Chang and Yuecen Jin
+Author(s): Michelle Chang (with contributions from Yuecen Jin)
 '''
 import time
 from read_bff import read_bff
@@ -13,21 +13,21 @@ from Blocks_Lazors import Block, Lazer
 
 def inbounds(x, y, x_dimension, y_dimension):
     '''
-    Validate if the laser positions specified(x and y) are within the grid.
+    Validate if the laser positions specified (x and y) are within the grid.
 
     **Parameters**
         x: *int*
-            An x coordinate to check if it resides within the grid.
+            x position of laser
         y: *int*
-            A y coordinate to check if it resides within the grid.
+            y position of laser
         x_dimension: *int*
-            The boundary of x direction
+            the grid boundary in the x direction
         y_dimension: *int*
-            The boundary of y direction
+            the grid boundary in the y direction
 
     **Returns**
-        valid: *bool*
-            Whether the coordiantes are valid(True) or not (True).
+        check: *bool*
+            if the position is valid, return True and if not return False
     '''
 
     if x > 0 and x < x_dimension-1 and y > 0 and y < y_dimension-1:
@@ -188,7 +188,8 @@ def print_solution(file_name, board, laser_paths, targets):
             given board layout
 
     **Returns**
-        None (generates a txt file of the solution board)
+        None (generates a txt file of the solution board or prints
+        out no solution found)
     '''
 
     base_name = file_name.split(".bff")[0]

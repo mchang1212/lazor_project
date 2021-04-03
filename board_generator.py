@@ -6,9 +6,10 @@ Software Carpentry - Lazor Project
 This file was coded by Michelle Chang
 '''
 
-from itertools import permutations 
+from itertools import permutations, combinations
 from read_bff import read_bff
 import copy
+
 
 def generator_board(grid, blocks):
     '''
@@ -114,7 +115,7 @@ def generator_board(grid, blocks):
                 half = int((len(before)-1)/2)
                 if sum(before) != 0 and sum(after) != 0:
                     combined = before[0:half] + after[half:len(after)]
-                    expanded_grid[j] = combined       
+                    expanded_grid[j] = combined        
     
         possible_boards.append(expanded_grid)
 
@@ -122,10 +123,10 @@ def generator_board(grid, blocks):
 
 
 if __name__ == '__main__':
-    file_name = "/Users/michellechang/Desktop/boards/tiny_5.bff"
+    file_name = "/Users/michellechang/Desktop/boards/mad_4.bff"
     board = read_bff(file_name)
     grid = board[0]
     blocks = board[1]
     all_boards = generator_board(grid, blocks)
 
-    print(all_boards[124])
+    print(all_boards[0])

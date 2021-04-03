@@ -55,6 +55,15 @@ def generator_board(grid, blocks):
     # available block can be placed
 
     def check_if_all_same(blocks):
+        '''
+        This function checks if the blocks in our list are all the same type
+        
+        **Parameters**
+            blocks: *list* of integers
+        **Returns**
+            check: boolean
+                True is all blocks are all the same type or False or else
+        '''
         element = blocks[0]
         check = True
         # Comparing each element with first item 
@@ -67,6 +76,9 @@ def generator_board(grid, blocks):
     temp_perm = []
     temp_comb = []
     if check_if_all_same(blocks):
+        # if the blocks available for us to place are all the
+        # same type, we can reduce the possible boards by
+        # using a combination instead of a permutation
         for i in list(comb):
             temp_comb.append(list(i))
         temp_perm = temp_comb

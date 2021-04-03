@@ -2,7 +2,7 @@
 EN.540.635 Software Carpentry - Lazor Project
 Blocks and Lazors
 04/02/2021
-Author: Hyunwoo (Michael) Cho
+Author: Hyunwoo (Michael) Cho (with contributions from Yuecen Jin)
 '''
 
 class Block:

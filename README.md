@@ -1,4 +1,4 @@
-**Lazor_project**
+**Software Carpentry Spring 2021 Lazor Project**
 
 Authors: Michelle Chang, Hyunwoo (Michael) Cho, Yuecen Jin
 
@@ -15,3 +15,6 @@ The find_solution_board file is coded to check each potential board if it is the
 To solve the game, run the function in find_solution_board.py with the file_name within our bff files. After waiting for it to solve, the output text file layout should represent the solution grid with different type of blocks in the positions on the grid for easier understanding. The solution file will also list the laser path(s) and target points we wish the laser(s) to pass through, in order for us to verify the board found is indeed the solution
 
 Thank you. 
+
+Note:
+All bff files will run through all code in less than 2 mins, but we only find solution boards for dark_1 and numbered_6

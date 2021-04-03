@@ -52,9 +52,25 @@ def generator_board(grid, blocks):
     # perm is all the possible combinations of positions each
     # available block can be placed
 
+    def check_if_all_same(blocks):
+        element = blocks[0]
+        check = True
+        # Comparing each element with first element in blocks
+        for i in blocks:
+            if element != i:
+                check = False
+                break
+        return check
+
     temp_perm = []
-    for i in list(perm):
-        temp_perm.append(list(i))
+    temp_comb = []
+    if check_if_all_same(blocks):
+        for i in list(comb):
+            temp_comb.append(list(i))
+        temp_perm = temp_comb
+    else:
+        for i in list(perm):
+            temp_perm.append(list(i))
 
     # generating and storing all the boards that can be made
     for i in range(len(temp_perm)):

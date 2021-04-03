@@ -49,13 +49,14 @@ def generator_board(grid, blocks):
             if grid[i][j] == 1:
                 possible_spots.append([i, j])
     perm = permutations(possible_spots, len(blocks))
+    comb = combinations(possible_spots, len(blocks))
     # perm is all the possible combinations of positions each
     # available block can be placed
 
     def check_if_all_same(blocks):
         element = blocks[0]
         check = True
-        # Comparing each element with first element in blocks
+        # Comparing each element with first item 
         for i in blocks:
             if element != i:
                 check = False

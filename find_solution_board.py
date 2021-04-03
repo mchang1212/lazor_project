@@ -3,13 +3,14 @@ Michelle Chang, Michael Cho, and Yuecen Jin
 Software Carpentry - Lazor Project
 04/02/2021
 
-Author(s): Michelle Chang
+Author(s): Michelle Chang and Yuecen Jin
 '''
 
 import time
 from read_bff import read_bff
 from board_generator import generator_board
 from Blocks_Lazors import Block, Lazer
+
 
 def inbounds(x, y, x_dimension, y_dimension):
     '''
@@ -30,7 +31,7 @@ def inbounds(x, y, x_dimension, y_dimension):
             Whether the coordiantes are valid(True) or not (True).
     '''
 
-    if x > 0 and x < x_dimension and y > 0 and y < y_dimension:
+    if x > 0 and x < x_dimension-1 and y > 0 and y < y_dimension-1:
         return True
     else:
         return False
@@ -81,14 +82,11 @@ def check_solution(board, laser_position, laser_direction, targets):
         path = lasers[i].path
 
         # this means laser starts at the board boundaries
-        if inbounds(position[0], position[1], width, height) == False:
+        if inbounds(position[0], position[1], width, height) == False or board[position[1]][position[0]] != 0:
             position[0] = position[0]+direction[0]
             position[1] = position[1]+direction[1]
 
         while inbounds(position[0], position[1], width, height):
-#             print(position)
-#             print(direction)
-#             print(board[position[1]][position[0]])
             block = Block(board[position[1]][position[0]])
             update = block.block_condition(position, direction)
             if len(update) == 2:
@@ -162,8 +160,8 @@ def check_solution(board, laser_position, laser_direction, targets):
     else:
         check = False
 
-#     print(check)
-#     print(laser_paths)
+    print(check)
+    print(laser_paths)
 
     return (check, laser_paths)
 
@@ -234,7 +232,7 @@ def print_solution(file_name, board, laser_paths, targets):
 
 
 if __name__ == '__main__':
-    file_name = "/Users/michellechang/Desktop/boards/dark_1.bff"
+    file_name = "/Users/michellechang/Desktop/boards/yarn_5.bff"
     board = read_bff(file_name)
     grid = board[0]
     blocks = board[1]
